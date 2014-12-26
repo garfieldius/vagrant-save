@@ -1,0 +1,87 @@
+#                                                                       #
+# This is free software; you can redistribute it and/or modify it under #
+# the terms of the MIT- / X11 - License                                 #
+#                                                                       #
+
+require 'httpclient'
+
+module VagrantPlugins
+  module Save
+    class Uploader
+
+      # @param [Vagrant::Environment] env
+      # @param [Log4r::Logger] logger
+      def initialize(env, logger)
+        @env = env
+        @logger = logger
+      end
+
+      # @param [Vagrant::Machine] machine
+      # @param [string] file
+      # @param [string] version
+      # @return int
+      def send(machine, file, version)
+
+        @env.ui.info('Uploading now')
+
+        provider = machine.provider_name.to_s
+        ping_url = make_url(machine)
+        post_url = ping_url + '/' + version + '/' + provider
+
+        client = HTTPClient.new
+        res = client.options(ping_url)
+
+        raise VagrantPlugins::Save::Errors::CannotContactBoxServer unless res.http_header.status_code == 200
+
+        File.open(file) do |f|
+          body = {'box' => f}
+          res = client.post(post_url, body)
+        end
+
+        raise VagrantPlugins::Save::Errors::UploadFailed unless res.http_header.status_code == 200
+
+        @env.ui.info('Upload successful')
+
+        0
+      end
+
+      # @param [Vagrant::Machine] machine
+      # @param [int] keep
+      # @return int
+      def clean(machine, keep)
+        @env.ui.info('Cleaning up old versions')
+
+        data_url = make_url(machine)
+
+        res = client.get(data_url)
+        data = JSON.parse(res.http_body)
+
+        client = HTTPClient.new
+        saved_versions = data['versions'].map{ |v| v.version}
+
+        if saved_versions.length > keep
+          saved_versions = saved_versions.sort.reverse
+          saved_versions.slice(keep, saved_versions.length).each { |v|
+            client.delete(data_url + '/' + v)
+          }
+        end
+
+        0
+      end
+
+      private
+
+      # @param [Vagrant::Machine] machine
+      # @return string
+      def make_url(machine)
+        name = machine.box.name.gsub(/_+/, '/')
+        base_url = Vagrant.server_url(machine.config.vm.box_server_url).to_s
+
+        raise Vagrant::Errors::BoxServerNotSet unless base_url
+
+        base_url + '/' + name
+      end
+
+    end
+  end
+end
