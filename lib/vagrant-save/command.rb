@@ -16,14 +16,18 @@ module VagrantPlugins
       def execute
         options = {}
         options[:version] = nil
-        options[:clean] = 3
+        options[:keep] = 3
 
         opts = OptionParser.new do |o|
           o.banner = 'Usage: vagrant save [version]'
           o.separator ''
 
-          o.on('-c', '--clean', 'Set the version of the uploaded box') do |c|
+          o.on('-v', '--version', 'Set the version of the uploaded box. Defaults to next bugfix version') do |c|
             options[:clean] = c.to_i
+          end
+
+          o.on('-k', '--keep', 'Number of versions to keep, older will be removed. Set to <= 0 to disable. Defaults to 3.') do |c|
+            options[:keep] = c.to_i
           end
         end
 
@@ -69,8 +73,8 @@ module VagrantPlugins
 
           FileUtils.remove(file)
 
-          if options[:clean] && options[:clean] > 1
-            up.clean(machine, options[:clean])
+          if options[:keep] && options[:keep] > 1
+            up.clean(machine, options[:keep])
           end
 
         end
