@@ -24,14 +24,20 @@ module VagrantPlugins
 
         @env.ui.info('Uploading now')
 
+        @logger.debug("Preparing to send file #{file}")
+
         provider = machine.provider_name.to_s
         ping_url = make_url(machine)
         post_url = ping_url + '/' + version + '/' + provider
+
+        @logger.debug("Pinging #{ping_url}")
 
         client = HTTPClient.new
         res = client.options(ping_url)
 
         raise VagrantPlugins::Save::Errors::CannotContactBoxServer unless res.http_header.status_code == 200
+
+        @logger.debug("Sending file to #{post_url}")
 
         File.open(file) do |f|
           body = {'box' => f}
@@ -53,16 +59,24 @@ module VagrantPlugins
 
         data_url = make_url(machine)
 
+        @logger.debug("Load versions from #{data_url}")
+
         res = client.get(data_url)
         data = JSON.parse(res.http_body)
 
         client = HTTPClient.new
         saved_versions = data['versions'].map{ |v| v.version}
 
+        @logger.debug("Received #{saved_versions.length} versions")
+
         if saved_versions.length > keep
           saved_versions = saved_versions.sort.reverse
           saved_versions.slice(keep, saved_versions.length).each { |v|
-            client.delete(data_url + '/' + v)
+            delete_url = data_url + '/' + v
+
+            @logger.debug("Sending delete #{delete_url}")
+
+            client.delete(delete_url)
           }
         end
 
