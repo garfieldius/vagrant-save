@@ -16,7 +16,7 @@ module VagrantPlugins
       def execute
         options = {}
         options[:version] = nil
-        options[:keep] = 3
+        options[:keep] = 0
 
         opts = OptionParser.new do |o|
           o.banner = 'Usage: vagrant save [version]'
@@ -26,7 +26,7 @@ module VagrantPlugins
             options[:clean] = c.to_i
           end
 
-          o.on('-k', '--keep', 'Number of versions to keep, older will be removed. Set to <= 0 to disable. Defaults to 3.') do |c|
+          o.on('-k', '--keep', 'Number of versions to keep, older will be removed. Must be >= 1. Defaults to 0.') do |c|
             options[:keep] = c.to_i
           end
         end

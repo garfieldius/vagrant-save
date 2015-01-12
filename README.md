@@ -22,16 +22,6 @@ vagrant save
 
 to release a new version of your box.
 
-Without any further arguments, vagrant-save will delete old versions, keeping only the last three. You can override this by setting the `-k|--keep` option.
-
-```bash
-# Keeping the last six versions
-vagrant save -k 6
-
-# Keeping all versions
-vagrant save -k 0
-```
-
 By default, it increases the bugfix version number by one. So an installed 1.0.0 becomes 1.0.1. You can specify the version yourself using the parameter `-v|--version`, like this:
 
 ```bash
@@ -39,6 +29,17 @@ vagrant save -v 1.2.0
 ```
 
 The parameter must always have all three digits and must be greater than the installed version.
+
+You may want to clean up the boxserver by deleting old versions. The `-k|--keep` parameter sets how many versions to keep. The versions are sorted in descending order, older than the newest X will be deleted:
+
+```bash
+# Keeping the last six versions
+vagrant save -k 6
+
+# Keeping all versions
+# Does not need to be written, as it is the default setting
+vagrant save -k 0
+```
 
 ## License
 
