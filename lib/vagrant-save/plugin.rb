@@ -11,7 +11,7 @@ module VagrantPlugins
 
       description <<-EOF
       Uses vagrant-export to create a.box file from the current machine and
-      saves it to a boxserver using a HTTP PUT request.
+      saves it to a boxserver using a HTTP POST request.
       EOF
 
       command 'save' do
