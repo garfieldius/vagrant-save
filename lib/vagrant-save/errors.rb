@@ -3,6 +3,10 @@
 # the terms of the MIT- / X11 - License                                 #
 #                                                                       #
 
+require 'vagrant/errors'
+
+include Vagrant::Errors
+
 module VagrantPlugins
   module Save
     module Errors
