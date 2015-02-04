@@ -83,8 +83,6 @@ module VagrantPlugins
         0
       end
 
-      private
-
       # @param [Vagrant::Machine] machine
       # @return string
       def make_url(machine)

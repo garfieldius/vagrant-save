@@ -23,7 +23,7 @@ module VagrantPlugins
           o.separator ''
 
           o.on('-v', '--version', 'Set the version of the uploaded box. Defaults to next bugfix version') do |c|
-            options[:clean] = c.to_i
+            options[:version] = c.to_s
           end
 
           o.on('-k', '--keep', 'Number of versions to keep, older will be removed. Must be >= 1. Defaults to 0.') do |c|
@@ -71,10 +71,19 @@ module VagrantPlugins
 
           up.send(machine, file, version)
 
+          @env.boxes.add(
+            file,
+            machine.box.name,
+            version,
+            force: true,
+            metadata_url: up.make_url(machine),
+            providers: machine.provider_name.to_s
+          )
+
           FileUtils.remove(file)
 
           if options[:keep] && options[:keep] > 1
-            up.clean(machine, options[:keep])
+              up.clean(machine, options[:keep])
           end
 
         end
