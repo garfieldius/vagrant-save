@@ -12,7 +12,14 @@ vagrant plugin install vagrant-save
 
 ## Usage
 
-Have a [boxserver](https://github.com/trenker/boxserver) instance running and set the property `config.vm.box_server_url` to its address in your vagrant file.
+Have a [boxserver](https://github.com/trenker/boxserver) instance running and set the property `config.vm.box_server_url` to its address in your vagrant file. So your `Vagrantfile` contains the following statements:
+
+```ruby
+Vagrant.configure("2") do |config|
+  # This must be set
+  config.vm.box_server_url = "http://localhost:8001"
+end
+```
 
 Then just run
 
