@@ -46,5 +46,5 @@ Gem::Specification.new do |g|
 
   g.files         = unignored_files
   g.require_path  = 'lib'
-  g.add_dependency 'vagrant-export', '~> 0.2.3'
+  g.add_dependency 'vagrant-export', '>= 0.2.3'
 end
