@@ -7,7 +7,7 @@ Gem::Specification.new do |g|
   g.version       = VagrantPlugins::Save::VERSION
   g.platform      = Gem::Platform::RUBY
   g.license       = 'MIT'
-  g.authors       = 'Georg Großberger'
+  g.authors       = 'Georg Grossberger'
   g.email         = 'contact@grossberger-ge.org'
   g.homepage      = 'https://github.com/trenker/vagrant-save.git'
   g.summary       = 'Export boxes to a boxserver'
