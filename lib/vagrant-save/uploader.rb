@@ -27,6 +27,11 @@ module VagrantPlugins
         @logger.debug("Preparing to send file #{file}")
 
         provider = machine.provider_name.to_s
+
+        if provider =~ /vmware/
+          provider = 'vmware_desktop'
+        end
+
         ping_url = make_url(machine)
         post_url = ping_url + '/' + version + '/' + provider
 
