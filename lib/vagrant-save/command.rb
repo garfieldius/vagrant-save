@@ -68,8 +68,7 @@ module VagrantPlugins
           end
 
           file = ex.handle(machine, false, false)
-
-          up.send(machine, file, version)
+          provider_name = up.send(machine, file, version)
 
           @env.boxes.add(
             file,
@@ -77,7 +76,7 @@ module VagrantPlugins
             version,
             force: true,
             metadata_url: up.make_url(machine),
-            providers: machine.provider_name.to_s
+            providers: provider_name
           )
 
           FileUtils.remove(file)

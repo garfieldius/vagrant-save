@@ -58,7 +58,7 @@ module VagrantPlugins
 
         machine.ui.info('Upload successful')
 
-        0
+        provider
       end
 
       # @param [Vagrant::Machine] machine
