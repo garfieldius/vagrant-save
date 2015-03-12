@@ -19,15 +19,15 @@ module VagrantPlugins
         options[:keep] = 0
 
         opts = OptionParser.new do |o|
-          o.banner = 'Usage: vagrant save [version]'
+          o.banner = 'Usage: vagrant save [-v|--version VERSION] [-k|--keep COUNT]'
           o.separator ''
 
-          o.on('-v', '--version', 'Set the version of the uploaded box. Defaults to next bugfix version') do |c|
-            options[:version] = c.to_s
+          o.on('-v', '--version', 'Set the version of the uploaded box. Defaults to next bugfix version') do |v|
+            options[:version] = v.to_s
           end
 
-          o.on('-k', '--keep', 'Number of versions to keep, older will be removed. Must be >= 1. Defaults to 0.') do |c|
-            options[:keep] = c.to_i
+          o.on('-k', '--keep', 'Number of versions to keep, older will be removed. Must be >= 1. Defaults to 0.') do |v|
+            options[:keep] = v.to_i
           end
         end
 
