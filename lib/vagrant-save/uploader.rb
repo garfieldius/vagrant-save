@@ -22,7 +22,7 @@ module VagrantPlugins
       # @return int
       def send(machine, file, version)
 
-        @env.ui.info('Uploading now')
+        machine.ui.info('Uploading now')
 
         @logger.debug("Preparing to send file #{file}")
 
@@ -56,7 +56,7 @@ module VagrantPlugins
 
         raise VagrantPlugins::Save::Errors::UploadFailed unless res.http_header.status_code == 200
 
-        @env.ui.info('Upload successful')
+        machine.ui.info('Upload successful')
 
         0
       end
@@ -65,7 +65,7 @@ module VagrantPlugins
       # @param [int] keep
       # @return int
       def clean(machine, keep)
-        @env.ui.info('Cleaning up old versions')
+        machine.ui.info('Cleaning up old versions')
 
         data_url = make_url(machine)
 
