@@ -38,6 +38,7 @@ module VagrantPlugins
         @logger.debug("Pinging #{ping_url}")
 
         client = HTTPClient.new
+        client.receive_timeout = 10000
         res = client.options(ping_url)
 
         raise VagrantPlugins::Save::Errors::CannotContactBoxServer unless res.http_header.status_code == 200
