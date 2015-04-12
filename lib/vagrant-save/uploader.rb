@@ -50,8 +50,29 @@ module VagrantPlugins
         @logger.debug("Sending file to #{post_url}")
 
         File.open(file) do |f|
-          body = {'box' => f}
-          res = client.post(post_url, body)
+          body = {:box => f}
+          connection = client.post_async(post_url, body)
+          i = 0
+
+          while true
+            break if connection.finished?
+
+            @env.ui.info('.', new_line: false)
+            i++
+
+            if i > 40
+              @env.ui.clear_line
+              i = 0
+            end
+
+            sleep 1
+          end
+
+          if i > 0
+            @env.ui.clear_line
+          end
+
+          res = connection.pop
         end
 
         raise VagrantPlugins::Save::Errors::UploadFailed unless res.http_header.status_code == 200
