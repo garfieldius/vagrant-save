@@ -45,7 +45,6 @@ module VagrantPlugins
         require 'vagrant-export/exporter'
         require_relative 'uploader'
 
-        ex = VagrantPlugins::Export::Exporter.new(@env, @logger)
         up = Uploader.new(@env, @logger)
 
         with_target_vms argv, reverse: true do |machine|
@@ -67,7 +66,13 @@ module VagrantPlugins
             end
           end
 
-          file = ex.handle(machine, false, false)
+          ex = VagrantPlugins::Export::Exporter.new(machine, @env, @logger)
+          file = ex.target_file
+
+          unless File.file?(file)
+            ex.handle(false, false)
+          end
+
           provider_name = up.send(machine, file, version)
 
           @env.boxes.add(
