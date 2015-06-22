@@ -66,10 +66,12 @@ module VagrantPlugins
             end
           end
 
-          ex = VagrantPlugins::Export::Exporter.new(machine, @env, @logger)
-          file = ex.target_file
+          ex = VagrantPlugins::Export::Exporter.new(@env, @logger, machine)
+          file = ex.target_box
+          box_created = false
 
           unless File.file?(file)
+            box_created = true
             ex.handle(false, false)
           end
 
@@ -88,7 +90,7 @@ module VagrantPlugins
             providers: provider_name
           )
 
-          FileUtils.remove(file)
+          FileUtils.remove(file) if box_created
 
           if options[:keep] && options[:keep] > 1
               up.clean(machine, options[:keep])

@@ -57,13 +57,13 @@ module VagrantPlugins
           while true
             break if connection.finished?
 
-            @env.ui.info('.', new_line: false)
-            i++
-
             if i > 40
               @env.ui.clear_line
               i = 0
             end
+
+            @env.ui.info('.', new_line: false)
+            i += 1
 
             sleep 1
           end
