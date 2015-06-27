@@ -16,3 +16,5 @@ Gemfile.lock
 /.idea
 /.vagrant
 *.gem
+*.box
+Vagrantfile
