@@ -11,6 +11,10 @@ module VagrantPlugins
   module Save
     module Errors
 
+      class MachineNotCreated < VagrantError
+        error_message('Machine not created. Issue at least one "up" command before running "save"')
+      end
+
       class CannotContactBoxServer < VagrantError
         error_message('Cannot contact the given box server. Please make sure the URL is correct and it is running')
       end

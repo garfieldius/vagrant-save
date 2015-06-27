@@ -49,6 +49,10 @@ module VagrantPlugins
 
         with_target_vms argv, reverse: true do |machine|
 
+          if machine.state.short_description == 'not created'
+            raise MachineNotCreated
+          end
+
           if target_version
             version = target_version
 
