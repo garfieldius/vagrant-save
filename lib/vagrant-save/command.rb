@@ -78,8 +78,9 @@ module VagrantPlugins
           provider_name = up.send(machine, file, version)
 
           data = @env.machine_index.get(machine.index_uuid)
-          data.extra_data['version'] = version
+          data.extra_data['box']['version'] = version
           @env.machine_index.set(data)
+          @env.machine_index.release(data)
 
           @env.boxes.add(
             file,
