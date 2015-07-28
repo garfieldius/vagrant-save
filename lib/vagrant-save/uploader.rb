@@ -4,6 +4,8 @@
 #                                                                       #
 
 require 'httpclient'
+require 'net/http/uploadprogress'
+require 'uri'
 
 module VagrantPlugins
   module Save
@@ -49,31 +51,27 @@ module VagrantPlugins
 
         @logger.debug("Sending file to #{post_url}")
 
+        @env.ui.info('Uploading', new_line: false)
+
         File.open(file) do |f|
-          body = {:box => f}
-          connection = client.post_async(post_url, body)
-          i = 0
 
-          while true
-            break if connection.finished?
+          uri = URI.parse(post_url)
+          full_size = io.size
 
-            if i > 40
-              @env.ui.clear_line
-              i = 0
-            end
+          http = Net::HTTP.new(uri.host, uri.port)
 
-            @env.ui.info('.', new_line: false)
-            i += 1
+          req = Net::HTTP::Post.new(uri.path)
+          req.set_form({:box => io}, 'multipart/form-data')
 
-            sleep 1
-          end
-
-          if i > 0
+          Net::HTTP::UploadProgress.new(req) do |progress|
+            percent = progress.upload_size / full_size * 100
             @env.ui.clear_line
+            @env.ui.info(percent.round.to_s + "%", new_line: false)
           end
-
-          res = connection.pop
+          res = http.request(req)
         end
+
+        @env.ui.clear_line
 
         raise VagrantPlugins::Save::Errors::UploadFailed unless res.http_header.status_code == 200
 
