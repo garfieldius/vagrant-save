@@ -56,24 +56,33 @@ module VagrantPlugins
         File.open(file) do |f|
 
           uri = URI.parse(post_url)
-          full_size = io.size
+          full_size = f.size
 
           http = Net::HTTP.new(uri.host, uri.port)
+          http.open_timeout = 10000
+          http.read_timeout = 10000
 
           req = Net::HTTP::Post.new(uri.path)
-          req.set_form({:box => io}, 'multipart/form-data')
+          req.set_form({"box" => f}, 'multipart/form-data')
+
+          previous_percent = ""
 
           Net::HTTP::UploadProgress.new(req) do |progress|
-            percent = progress.upload_size / full_size * 100
-            @env.ui.clear_line
-            @env.ui.info(percent.round.to_s + "%", new_line: false)
+            frac = progress.upload_size.to_f / full_size.to_f
+            percent = (frac * 100).round.to_s + "%"
+
+            if percent != previous_percent
+              previous_percent = percent
+              @env.ui.clear_line
+              @env.ui.info(percent, new_line: false)
+            end
           end
           res = http.request(req)
         end
 
         @env.ui.clear_line
 
-        raise VagrantPlugins::Save::Errors::UploadFailed unless res.http_header.status_code == 200
+        raise VagrantPlugins::Save::Errors::UploadFailed unless res.code == '200'
 
         machine.ui.info('Upload successful')
 
