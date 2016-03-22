@@ -74,7 +74,7 @@ module VagrantPlugins
             if percent != previous_percent
               previous_percent = percent
               @env.ui.clear_line
-              @env.ui.info(percent, new_line: false)
+              @env.ui.report_progress(progress.upload_size.to_f, full_size.to_f)
             end
           end
           res = http.request(req)
