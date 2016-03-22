@@ -93,7 +93,6 @@ module VagrantPlugins
       # @param [int] keep
       # @return int
       def clean(machine, keep)
-        machine.ui.info('Cleaning up old versions')
 
         data_url = make_url(machine)
 
@@ -108,6 +107,8 @@ module VagrantPlugins
         @logger.debug("Received #{saved_versions.length} versions")
 
         if saved_versions.length > keep
+          machine.ui.info('Cleaning up old versions')
+
           saved_versions = saved_versions.sort.reverse
           saved_versions.slice(keep, saved_versions.length).each { |v|
             delete_url = data_url + '/' + v
