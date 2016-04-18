@@ -43,10 +43,11 @@ You may want to clean up the boxserver by deleting old versions. The `-k|--keep`
 # Keeping the last six versions
 vagrant save -k 6
 
-# Keeping all versions
-# Does not need to be written, as it is the default setting
+# Keeping all versions, disable cleanup
 vagrant save -k 0
 ```
+
+The default value for `--keep` is `2`.
 
 ## License
 
