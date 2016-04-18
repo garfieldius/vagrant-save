@@ -94,14 +94,17 @@ module VagrantPlugins
       # @return int
       def clean(machine, keep)
 
+        client = HTTPClient.new
+        client.connect_timeout = 10000
+        client.send_timeout    = 10000
+        client.receive_timeout = 10000
+
         data_url = make_url(machine)
 
         @logger.debug("Load versions from #{data_url}")
 
         res = client.get(data_url)
         data = JSON.parse(res.http_body)
-
-        client = HTTPClient.new
         saved_versions = data['versions'].map{ |v| v.version}
 
         @logger.debug("Received #{saved_versions.length} versions")
