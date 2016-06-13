@@ -5,6 +5,6 @@
 
 module VagrantPlugins
   module Save
-    VERSION = '0.2.10'
+    VERSION = '0.3.1'
   end
 end
