@@ -55,26 +55,31 @@ module VagrantPlugins
 
         File.open(file) do |f|
 
-          uri = URI.parse(post_url)
+          uri       = URI.parse(post_url)
           full_size = f.size
+          full      = format_bytes(full_size.to_f)
 
           http = Net::HTTP.new(uri.host, uri.port)
+
           http.open_timeout = 10000
           http.read_timeout = 10000
 
           req = Net::HTTP::Post.new(uri.path)
           req.set_form({"box" => f}, 'multipart/form-data')
 
-          previous_percent = ""
+          previous_info = ""
 
           Net::HTTP::UploadProgress.new(req) do |progress|
-            frac = progress.upload_size.to_f / full_size.to_f
+            frac    = progress.upload_size.to_f / full_size.to_f
             percent = (frac * 100).round.to_s + "%"
+            part    = format_bytes(progress.upload_size.to_f)
 
-            if percent != previous_percent
-              previous_percent = percent
+            info = "#{percent} (#{part} / #{full})"
+
+            if info != previous_info
+              previous_info = info
               @env.ui.clear_line
-              @env.ui.report_progress(progress.upload_size.to_f, full_size.to_f)
+              @env.ui.info(info, new_line: false)
             end
           end
           res = http.request(req)
@@ -89,12 +94,22 @@ module VagrantPlugins
         provider
       end
 
+      def format_bytes(num)
+        units = ["Byte", "KB", "MB", "GB", "TB"]
+        index = (Math.log(num) / Math.log(2)).to_i / 10
+        bytes = num / ( 1024 ** index )
+        bytes = bytes.round(2).to_s.gsub(/\.0+$/, "")
+
+        "#{bytes} #{units[index]}"
+      end
+
       # @param [Vagrant::Machine] machine
       # @param [int] keep
       # @return int
       def clean(machine, keep)
 
         client = HTTPClient.new
+
         client.connect_timeout = 10000
         client.send_timeout    = 10000
         client.receive_timeout = 10000
