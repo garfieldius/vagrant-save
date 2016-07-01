@@ -131,6 +131,7 @@ module VagrantPlugins
           saved_versions.slice(keep, saved_versions.length).each { |v|
             delete_url = data_url + '/' + v
 
+            machine.ui.info("Deleting version #{v}")
             @logger.debug("Sending delete #{delete_url}")
 
             client.delete(delete_url)

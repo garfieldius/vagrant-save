@@ -86,6 +86,8 @@ module VagrantPlugins
           @env.machine_index.set(data)
           @env.machine_index.release(data)
 
+          machine.ui.info("Adding new version to local store")
+
           @env.boxes.add(
             file,
             machine.box.name,
