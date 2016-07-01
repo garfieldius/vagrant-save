@@ -70,11 +70,14 @@ module VagrantPlugins
           previous_info = ""
 
           Net::HTTP::UploadProgress.new(req) do |progress|
-            frac    = progress.upload_size.to_f / full_size.to_f
-            percent = (frac * 100).round.to_s + "%"
-            part    = format_bytes(progress.upload_size.to_f)
-
-            info = "#{percent} (#{part} / #{full})"
+             if progress.upload_size.to_f >= full_size.to_f
+              info = "Upload complete, commiting new box"
+            else
+              frac    = progress.upload_size.to_f / full_size.to_f
+              percent = (frac * 100).round.to_s + "%"
+              part    = format_bytes(progress.upload_size.to_f)
+              info = "#{percent} (#{part} / #{full})"
+            end
 
             if info != previous_info
               previous_info = info
