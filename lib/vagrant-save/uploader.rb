@@ -122,16 +122,24 @@ module VagrantPlugins
         @logger.debug("Load versions from #{data_url}")
 
         res = client.get(data_url)
-        data = JSON.parse(res.http_body)
-        saved_versions = data['versions'].map{ |v| v.version}
 
-        @logger.debug("Received #{saved_versions.length} versions")
+        @logger.debug("Got response #{res.inspect}")
+
+        data = JSON.parse(res.body)
+
+        @logger.debug("Traverse versions in #{data.inspect}")
+
+        saved_versions = data['versions'].map{ |v|
+          @logger.debug("Received version #{v.inspect}")
+          v['version']
+        }
+
+        @logger.debug("Got #{saved_versions.length} versions: #{saved_versions.inspect}")
 
         if saved_versions.length > keep
           machine.ui.info('Cleaning up old versions')
 
-          saved_versions = saved_versions.sort.reverse
-          saved_versions.slice(keep, saved_versions.length).each { |v|
+          saved_versions.sort.reverse.slice(keep, saved_versions.length).each { |v|
             delete_url = data_url + '/' + v
 
             machine.ui.info("Deleting version #{v}")
