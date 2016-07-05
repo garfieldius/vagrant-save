@@ -68,6 +68,7 @@ module VagrantPlugins
           req.set_form({"box" => f}, 'multipart/form-data')
 
           previous_info = ""
+          previous_out  = 0.0
 
           Net::HTTP::UploadProgress.new(req) do |progress|
              if progress.upload_size.to_f >= full_size.to_f
@@ -79,8 +80,12 @@ module VagrantPlugins
               info = "#{percent} (#{part} / #{full})"
             end
 
-            if info != previous_info
+            t = Time.now.to_f
+
+            if info != previous_info && t - previous_out > 0.7
+              previous_out = t
               previous_info = info
+
               @env.ui.clear_line
               @env.ui.info(info, new_line: false)
             end
