@@ -144,7 +144,8 @@ module VagrantPlugins
         if saved_versions.length > keep
           machine.ui.info('Cleaning up old versions')
 
-          saved_versions.sort.reverse.slice(keep, saved_versions.length).each { |v|
+          saved_versions.sort!{ |a, b| Gem::Version.new(a) < Gem::Version.new(b) }
+          saved_versions.slice(keep, saved_versions.length).each { |v|
             delete_url = data_url + '/' + v
 
             machine.ui.info("Deleting version #{v}")
