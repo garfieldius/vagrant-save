@@ -17,6 +17,7 @@ module VagrantPlugins
         options = {}
         options[:version] = nil
         options[:keep] = 2
+        options[:clean] = true
 
         opts = OptionParser.new do |o|
           o.banner = 'Usage: vagrant save [-v|--version VERSION] [-k|--keep COUNT]'
@@ -26,7 +27,11 @@ module VagrantPlugins
             options[:version] = v.to_s
           end
 
-          o.on('-k', '--keep', 'Number of versions to keep, older will be removed. Must be > 1. Defaults to 2.') do |v|
+          o.on('--[no-]clean', 'Enables cleanup of old versions. Default is true.') do |v|
+            options[:clean] = v
+          end
+
+          o.on('-k', '--keep', 'Number of versions to keep during a clean, older will be removed. Must be > 1. Default is 2.') do |v|
             options[:keep] = v.to_i
           end
         end
@@ -99,7 +104,7 @@ module VagrantPlugins
 
           FileUtils.remove(file) if box_created
 
-          if options[:keep] && options[:keep] > 1
+          if options[:keep] && options[:keep] > 1 && options[:clean]
               up.clean(machine, options[:keep])
           end
 

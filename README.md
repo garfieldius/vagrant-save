@@ -1,6 +1,6 @@
 # vagrant-save
 
-This is a simple plugin to export boxes into .box files using [vagrant-export](https://github.com/trenker/vagrant-export) and pushes that file to a  [boxserver](https://github.com/trenker/boxserver) instance.
+This is a simple plugin to export boxes into .box files using [vagrant-export](https://github.com/trenker/vagrant-export) and pushes that file to a [boxserver](https://github.com/trenker/boxserver) instance.
 
 ## Installation
 
@@ -43,11 +43,11 @@ You may want to clean up the boxserver by deleting old versions. The `-k|--keep`
 # Keeping the last six versions
 vagrant save -k 6
 
-# Keeping all versions, disable cleanup
-vagrant save -k 0
+# No cleanup
+vagrant save --no-clean
 ```
 
-The default value for `--keep` is `2`.
+The default value for `--keep` is `2`. Cleanup is enabled by default but can be disabled using `--no-clean`.
 
 ## License
 
